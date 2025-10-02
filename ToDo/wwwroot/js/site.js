@@ -57,6 +57,7 @@ $(document).ready(function () {
                     }
 
                     $("#editTaskModal").modal("hide");
+                    location.reload();
                 } else {
                     alert("Error while saving!");
                 }

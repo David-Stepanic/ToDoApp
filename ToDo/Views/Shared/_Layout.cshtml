@@ -19,7 +19,11 @@
 
                 <div class="container-fluid d-flex justify-content-between">
 
-                    <div class="d-none d-lg-block" style="width:150px;"></div>
+                    <div class="d-none d-lg-block logo-container">
+                        <a asp-controller="Home" asp-action="Welcome">
+                            <img src="~/images/logo.png" alt="ToDoApp Logo" class="logo-img">
+                        </a>
+                    </div>
 
                     <a class="navbar-brand ms-lg-auto fw-bold fs-2 text-dark" asp-controller="Home" asp-action="Welcome">
                         ToDoApp
