@@ -1,0 +1,107 @@
+﻿@model IEnumerable<ToDo>
+
+<div class="row">
+	<div class="col-md-2 ">
+		<form asp-action="Filter" method="post">
+			<div class="mb-3">
+				<label class="form-label">Category:</label>
+				<select name="filter" class="form-select"
+						asp-items="@(new SelectList(ViewBag.Categories, "CategoryId", "Name", ViewBag.Filters.CategoryId))">
+					<option value="all">All</option>
+				</select>
+			</div>
+			<div class="mb-3">
+				<label class="form-label">Due:</label>
+				<select name="filter" class="form-select"
+						asp-items="@(new SelectList(ViewBag.DueFilters, "Key", "Value", ViewBag.Filters.Due))">
+					<option value="all">All</option>
+				</select>
+			</div>
+			<div class="mb-3">
+				<label class="form-label">Status:</label>
+				<select name="filter" class="form-select"
+						asp-items="@(new SelectList(ViewBag.Statuses, "StatusId", "Name", ViewBag.Filters.StatusId))">
+					<option value="all">All</option>
+				</select>
+			</div>
+			<button type="submit" class="custom-btn">Filter</button>
+			<a asp-action="Index" asp-route-id="" class="custom-btn">Clear</a>
+		</form>
+	</div>
+	<div class="col-md-10">
+		<form asp-action="MarkComplete" method="post" asp-route-id="@ViewBag.Filters.FilterString">
+			<table class="table table-bordered table-striped mt-2 text-center  border border-dark border-2 rounded p-3 mt-4">
+				<thead>
+					<tr>
+						<th>No.</th>
+						<th>Descritpion</th>
+						<th>Category</th>
+						<th>Due Date</th>
+						<th>Status</th>
+						<th class="w-25">Edit/Delete</th>
+						<th><i class="bi bi-square"></i></th>
+					</tr>
+				</thead>
+				<tbody>
+					@{
+						int counter = 1;
+					}
+					@foreach (ToDo task in Model)
+					{
+						string overdue = (task.Overdue && task.StatusId == "open")  ? "bg-warning" : "";
+						<tr id="row-@task.Id" class="align-middle text-center fw-semibold fs-5">
+							<td>@counter.</td>
+							<td>@task.Description</td>
+							<td>@task.Category.Name</td>
+							<td class="@overdue">@task.DueDate?.ToShortDateString()</td>
+							<td class="@overdue">@task.Status.Name</td>
+							<td>
+									 <button type="button" class="custom-btn btn-sm editBtn"
+										data-id="@task.Id"
+										data-bs-toggle="modal" data-bs-target="#editTaskModal">
+									<i class="bi bi-pencil"></i>
+								</button>
+								<button type="button" class="custom-btn btn-sm btn-danger deleteBtn"
+										data-id="@task.Id">
+									<i class="bi bi-trash"></i>
+								</button>
+							</td>
+							<td>
+								@if (task.StatusId == "open")
+								{
+									<button type="submit" class="custom-btn btn-sm"
+											name="@nameof(ToDo.Id)" value="@task.Id">
+										Mark Completed
+									</button>
+								}
+							</td>
+						</tr>
+						counter++;
+					}
+				</tbody>
+			</table>
+		</form>
+		
+		<form asp-action="DeleteComplete" method="post" asp-route-id="@ViewBag.Filters.FilterString" class="text-center mt-5">
+				<a asp-action="Add" class="custom-btn me-3">Add new task</a>
+				<button type="submit" class="custom-btn">Delete completed tasks</button>
+		</form>
+
+		<div class="modal fade" id="editTaskModal" tabindex="-1" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title">Edit Task</h5>
+						<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+					</div>
+					<div class="modal-body" id="editTaskModalBody">
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+
+
